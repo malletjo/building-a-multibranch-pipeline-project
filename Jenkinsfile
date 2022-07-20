@@ -1,42 +1,37 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:6-alpine'
-            args '-p 3000:3000 -p 5000:5000'
-        }
-    }
+    agent none
+
     environment {
         CI = 'true'
     }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'npm install && sleep 500'
+    
+    podTemplate(containers: [
+        containerTemplate(name: 'node', image: 'node:6-alpine', command: 'sleep', args: '-p 3000:3000 -p 5000:5000'),
+    ]) {
+
+        node(POD_LABEL) {
+            stage('Build') {
+                container('node') {
+                    stage('Build 1') {
+                        steps {
+                            sh 'npm install && sleep 500'
+                        }
+                    }
+                }
             }
-        }
-        stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
+            stage('test') {
+                container('node') {
+                    stage('test 1') {
+                        steps {
+                            sh './jenkins/scripts/test.sh && sleep 500'
+                        }
+                    }
+                }
             }
-        }
-        stage('Deliver for development') {
-            when {
-                branch 'dev'
-            }
-            steps {
-                sh './jenkins/scripts/deliver-for-development.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
-            }
-        }
-        stage('Deploy for production') {
-            when {
-                branch 'production'
-            }
-            steps {
-                sh './jenkins/scripts/deploy-for-production.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
+            stage('Test') {
+                steps {
+                    sh './jenkins/scripts/test.sh'
+                }
             }
         }
     }
