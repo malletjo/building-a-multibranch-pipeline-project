@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'npm install'
+                sh 'npm install && sleep 500'
             }
         }
         stage('Test') {
@@ -21,7 +21,7 @@ pipeline {
         }
         stage('Deliver for development') {
             when {
-                branch 'development'
+                branch 'dev'
             }
             steps {
                 sh './jenkins/scripts/deliver-for-development.sh'
