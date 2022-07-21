@@ -18,7 +18,7 @@ pipeline {
             )
     ]) {
 
-        node(POD_LABEL) {
+        node(build-pod') {
             stage('Build') {
                 container('node14') {
                     stage('Build 1') {
