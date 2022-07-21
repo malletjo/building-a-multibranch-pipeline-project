@@ -6,7 +6,13 @@ pipeline {
     }
     
     podTemplate(containers: [
-        containerTemplate(name: 'node', image: 'node:6-alpine', command: 'sleep', args: '-p 3000:3000 -p 5000:5000'),
+        containerTemplate(
+            name: 'node',
+            image: 'node:6-alpine',
+            command: 'sleep',
+            args: '-p 3000:3000 -p 5000:5000',
+            namespace: 'jenkins'),
+            podRetention: always()
     ]) {
 
         node(POD_LABEL) {
