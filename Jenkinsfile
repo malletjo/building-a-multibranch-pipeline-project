@@ -15,25 +15,19 @@ podTemplate(
         stage('Build') {
             container('node14') {
                 stage('Build 1') {
-                    steps {
-                        sh 'npm install && sleep 500'
-                    }
+                    sh 'npm install && sleep 500'
                 }
             }
         }
         stage('test') {
             container('node') {
                 stage('test 1') {
-                    steps {
-                        sh './jenkins/scripts/test.sh && sleep 500'
-                    }
+                    sh './jenkins/scripts/test.sh && sleep 500'
                 }
             }
         }
         stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
-            }
+            sh './jenkins/scripts/test.sh'
         }
     }
 }
