@@ -15,7 +15,7 @@ podTemplate(
         stage('Build') {
             container('node14') {
                 stage('Build 1') {
-                    sh 'npm install && sleep 500'
+                    sh 'ls -l'
                 }
             }
         }
