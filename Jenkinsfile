@@ -13,10 +13,8 @@ podTemplate(
 
     node('build-pod') {
         stage('Build') {
-            container('golang') {
-                stage('Build 1') {
-                    sh 'ls -l'
-                }
+            stage('Build 1') {
+                sh 'ls -l'
             }
         }
     }
