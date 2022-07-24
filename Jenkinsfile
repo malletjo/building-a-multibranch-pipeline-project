@@ -1,30 +1,21 @@
-podTemplate(containers: [
-    containerTemplate(name: 'maven', image: 'maven:3.8.1-jdk-8', command: 'sleep', args: '99d'),
-    containerTemplate(name: 'golang', image: 'golang:1.16.5', command: 'sleep', args: '99d')
-  ]) {
+podTemplate(
+        name:'build-pod',
+        namespace: 'jenkins',
+        podRetention: always(),
+        containers: [
+            containerTemplate(
+                name: 'node6', 
+                image: 'node:6-alpine', 
+                command: 'sleep', 
+                args: '-p 3000:3000 -p 5000:5000'
+            )
+        ]) {
 
-    node(POD_LABEL) {
-        stage('Get a Maven project') {
-            git 'https://github.com/jenkinsci/kubernetes-plugin.git'
-            container('maven') {
-                stage('Build a Maven project') {
-                    sh 'mvn -B -ntp clean install'
-                }
+    node('build-pod') {
+        stage('Build') {
+            stage('Build 1') {
+                sh 'npm install'
             }
         }
-
-        stage('Get a Golang project') {
-            git url: 'https://github.com/hashicorp/terraform.git', branch: 'main'
-            container('golang') {
-                stage('Build a Go project') {
-                    sh '''
-                    mkdir -p /go/src/github.com/hashicorp
-                    ln -s `pwd` /go/src/github.com/hashicorp/terraform
-                    cd /go/src/github.com/hashicorp/terraform && make
-                    '''
-                }
-            }
-        }
-
     }
 }
